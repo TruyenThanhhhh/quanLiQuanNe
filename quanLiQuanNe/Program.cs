@@ -1,51 +1,51 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using quanLiQuanNe.Data;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Cấu hình kết nối cơ sở dữ liệu
+// Configure database connection
 builder.Services.AddDbContext<quanLiQuanNeContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("quanLiQuanNeContext")
     ?? throw new InvalidOperationException("Connection string 'quanLiQuanNeContext' not found.")));
 
-// Thêm dịch vụ cho controller và view
+// Add services for controllers and views
 builder.Services.AddControllersWithViews();
 
-// Thêm dịch vụ cho session
-builder.Services.AddDistributedMemoryCache(); // Cung cấp bộ nhớ đệm cho session
+// Add services for session
+builder.Services.AddDistributedMemoryCache(); // Provides memory cache for session
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30);  // Thời gian hết hạn session
-    options.Cookie.HttpOnly = true;  // Chỉ có thể truy cập cookie qua HTTP
-    options.Cookie.IsEssential = true;  // Cookie này cần thiết cho hoạt động ứng dụng
+    options.IdleTimeout = TimeSpan.FromMinutes(30);  // Session timeout
+    options.Cookie.HttpOnly = true;  // Accessible only via HTTP
+    options.Cookie.IsEssential = true;  // Essential for app functionality
 });
 
 var app = builder.Build();
 
-// Cấu hình HTTP request pipeline
-if (!app.Environment.IsDevelopment())
+// Configure HTTP request pipeline
+if (app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseDeveloperExceptionPage(); // Use developer exception page in development
+}
+else
+{
+    app.UseExceptionHandler("/Home/Error"); // Use error handling in production
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles(); // Đảm bảo rằng tệp tĩnh (CSS, JS, hình ảnh) được phục vụ đúng cách
+app.UseStaticFiles(); // Serve static files
 
 app.UseRouting();
 
-// Cấu hình session
+// Configure session
 app.UseSession();
 
-// Cấu hình quyền truy cập
+// Configure authorization
 app.UseAuthorization();
 
-// Cấu hình route mặc định
+// Configure default route
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=DangNhap}/{id?}");
-
 app.Run();

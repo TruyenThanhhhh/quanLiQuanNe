@@ -1,47 +1,55 @@
 ﻿@model quanLiQuanNe.Models.nguoiDung
+
 @{
+    Layout = "~/Views/Shared/_Layout_Account.cshtml";
     ViewData["Title"] = "Đăng nhập";
 }
 
-<div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
-    <div class="card shadow p-4" style="width: 350px; border-radius: 15px;">
-        <h3 class="text-center mb-4 font-weight-bold">Đăng nhập</h3>
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow p-4 mt-5">
+            <h3 class="text-center mb-4">Đăng nhập hệ thống</h3>
 
-        <form asp-action="DangNhap" asp-controller="Account" method="post">
-            @Html.AntiForgeryToken()
-
-            @if (ViewData.ModelState[""]?.Errors.Count > 0)
+            @if (ViewBag.ErrorMessage != null)
             {
-                <div class="alert alert-danger">
-                    @Html.ValidationSummary(true)
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @ViewBag.ErrorMessage
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             }
 
-            <div class="form-group mb-3">
-                <label asp-for="userName" class="form-label">Tên đăng nhập:</label>
-                <input asp-for="userName" class="form-control" />
-                <span asp-validation-for="userName" class="text-danger"></span>
-            </div>
+            <form asp-controller="Account" asp-action="DangNhap" method="post">
+                @Html.AntiForgeryToken()
 
-            <div class="form-group mb-3">
-                <label asp-for="passWord" class="form-label">Mật khẩu:</label>
-                <input asp-for="passWord" type="password" class="form-control" />
-                <span asp-validation-for="passWord" class="text-danger"></span>
-            </div>
+                <div class="mb-3">
+                    <label asp-for="userName" class="form-label">Tên đăng nhập</label>
+                    <input asp-for="userName" class="form-control" placeholder="Nhập tên đăng nhập" />
+                    <span asp-validation-for="userName" class="text-danger"></span>
+                </div>
 
-            <div class="d-grid mt-4">
-                <button type="submit" class="btn btn-primary">Đăng nhập</button>
-            </div>
+                <div class="mb-3">
+                    <label asp-for="passWord" class="form-label">Mật khẩu</label>
+                    <input asp-for="passWord" type="password" class="form-control" placeholder="Nhập mật khẩu" />
+                    <span asp-validation-for="passWord" class="text-danger"></span>
+                </div>
 
-            <div class="text-center mt-3">
-                <a asp-action="DangKy" asp-controller="Account">Chưa có tài khoản? Đăng ký ngay</a>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                    </button>
+                </div>
+            </form>
+
+            <hr />
+
+            <div class="text-center">
+                <p>Chưa có tài khoản?</p>
+                <a asp-controller="Account" asp-action="DangKy" class="text-decoration-none">Đăng ký ngay</a>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }

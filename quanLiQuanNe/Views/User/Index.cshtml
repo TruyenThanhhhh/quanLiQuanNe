@@ -1,0 +1,33 @@
+﻿@model IEnumerable<quanLiQuanNe.Models.nguoiDung>
+
+<h2>Danh sách người dùng</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>UserName</th>
+            <th>Họ Tên</th>
+            <th>SĐT</th>
+            <th>Quyền</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.userName</td>
+                <td>@item.hoTen</td>
+                <td>@item.sdt</td>
+                <td>@(item.isAdmin ? "Admin" : "User")</td>
+                <td>
+                    <a href="@Url.Action("Edit", "User", new { id = item.Id })">Sửa</a> |
+                    <a href="@Url.Action("Delete", "User", new { id = item.Id })">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a class="btn btn-primary" href="@Url.Action("Create", "User")">Thêm người dùng mới</a>
+<a href="javascript:history.back()" class="btn btn-secondary">Quay lại</a>

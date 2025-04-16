@@ -1,0 +1,34 @@
+﻿@model quanLiQuanNe.Models.nguoiDung
+
+<h2>Sửa thông tin người dùng</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <label for="userName">Tên đăng nhập</label>
+        <input type="text" class="form-control" id="userName" name="userName" value="@Model.userName" required />
+    </div>
+    <div class="form-group">
+        <label for="passWord">Mật khẩu</label>
+        <input type="password" class="form-control" id="passWord" name="passWord" value="@Model.passWord" required />
+    </div>
+    <div class="form-group">
+        <label for="hoTen">Họ và tên</label>
+        <input type="text" class="form-control" id="hoTen" name="hoTen" value="@Model.hoTen" required />
+    </div>
+    <div class="form-group">
+        <label for="sdt">Số điện thoại</label>
+        <input type="text" class="form-control" id="sdt" name="sdt" value="@Model.sdt" required />
+    </div>
+    <div class="form-group">
+        <label for="isAdmin">Quyền admin</label>
+        <input type="checkbox" class="form-control" id="isAdmin" name="isAdmin" @(Model.isAdmin ? "checked" : "") />
+    </div>
+    <div class="form-group">
+        <label for="soDu">Số dư</label>
+        <input type="number" class="form-control" id="soDu" name="soDu" value="@Model.soDu" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Cập nhật người dùng</button>
+    <a href="javascript:history.back()" class="btn btn-secondary">Quay lại</a>
+</form>

@@ -1,0 +1,12 @@
+﻿@model quanLiQuanNe.Models.nguoiDung
+
+<h2>Xóa người dùng</h2>
+
+<p>Bạn có chắc chắn muốn xóa người dùng <strong>@Model.userName</strong>?</p>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    <a href="@Url.Action("Index", "User")" class="btn btn-secondary">Hủy</a>
+    <a href="javascript:history.back()" class="btn btn-secondary">Quay lại</a>
+</form>

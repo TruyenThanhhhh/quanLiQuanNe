@@ -5,62 +5,48 @@ using Microsoft.AspNetCore.Http;
 using System.Linq;
 using System;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
+
 
 namespace quanLiQuanNe.Controllers
 {
     public class AdminController : Controller
     {
+        //public IActionResult Index()
+        //{
+        //    // Kiểm tra xem đã đăng nhập và có phải admin không
+        //    var isAdmin = HttpContext.Session.GetInt32("IsAdmin") == 1;
+        //    if (!isAdmin)
+        //    {
+        //        return RedirectToAction("DangNhap", "Account");
+        //    }
+
+        //    ViewBag.UserName = HttpContext.Session.GetString("UserName");
+        //    return View();
+        //}
         private readonly quanLiQuanNeContext _context;
 
         public AdminController(quanLiQuanNeContext context)
         {
             _context = context;
         }
-
-        [AdminRequired]
         public IActionResult Index()
         {
             try
             {
-                var model = new AdminDashboardViewModel
-                {
-                    NguoiDungs = _context.nguoiDung.ToList(),
-                    MayTinhs = _context.mayTinh.ToList()
-                };
+                var userName = HttpContext.Session.GetString("UserName");
+                Console.WriteLine($"Session UserName: {userName}");
 
-                return View(model);
+                ViewBag.UserName = userName ?? "Unknown";
+                return View();
             }
             catch (Exception ex)
             {
-                // Log error (nên sử dụng ILogger trong thực tế)
-                return RedirectToAction("Error", "Home");
-            }
-        }
-
-        [AdminRequired]
-        public IActionResult chucNangAdmin()
-        {
-            return View();
-        }
-    }
-
-    // Custom attribute để kiểm tra admin
-    public class AdminRequiredAttribute : ActionFilterAttribute
-    {
-        public override void OnActionExecuting(ActionExecutingContext context)
-        {
-            var isAdmin = context.HttpContext.Session.GetInt32("IsAdmin");
-            if (isAdmin != 1)
-            {
-                context.Result = new RedirectToActionResult("DangNhap", "Account", null);  // Điều hướng về trang đăng nhập nếu không phải admin
+                Console.WriteLine($"Lỗi trong Index: {ex.Message}");
+                return RedirectToAction("DangNhap", "Account");
             }
         }
     }
 
-    // ViewModel cho trang admin
-    public class AdminDashboardViewModel
-    {
-        public List<nguoiDung> NguoiDungs { get; set; }
-        public List<mayTinh> MayTinhs { get; set; }
-    }
 }

@@ -1,0 +1,40 @@
+﻿@model IEnumerable<quanLiQuanNe.Models.suDungMay>
+
+<div class="container">
+    <h1>Lịch sử sử dụng máy tính</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Mã Người Dùng</th>
+                <th>Mã Máy</th>
+                <th>Thời Gian Bắt Đầu</th>
+                <th>Thời Gian Kết Thúc</th>
+                <th>Tổng Tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var suDung in Model)
+            {
+                <tr>
+                    <td>@suDung.Id</td>
+                    <td>@suDung.maNguoiDung</td>
+                    <td>@suDung.maMay</td>
+                    <td>@suDung.thoiGianBatDau.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                        @if (suDung.thoiGianKetThuc.HasValue)
+                        {
+                            @suDung.thoiGianKetThuc.Value.ToString("dd/MM/yyyy HH:mm")
+                        }
+                        else
+                        {
+                            <span>Chưa kết thúc</span>
+                        }
+                    </td>
+                    <td>@suDung.tongTien</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

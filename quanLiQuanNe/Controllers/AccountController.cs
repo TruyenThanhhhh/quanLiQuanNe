@@ -15,17 +15,21 @@ namespace quanLiQuanNe.Controllers
             _context = context;
         }
 
-        // GET: Display Login Page
+        // GET: Hiển thị trang đăng nhập
         public IActionResult DangNhap()
         {
+            if (TempData["ErrorMessage"] != null)
+            {
+                ViewBag.ErrorMessage = TempData["ErrorMessage"].ToString();
+            }
+
             return View();
         }
 
-        // POST: Handle Login
+        // POST: Xử lý đăng nhập
         [HttpPost]
-        [HttpPost]
-        [HttpPost]
-        public IActionResult DangNhap(nguoiDung model)
+        [ValidateAntiForgeryToken]
+        public IActionResult DangNhap(LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -34,46 +38,51 @@ namespace quanLiQuanNe.Controllers
 
                 if (user != null)
                 {
-                    // Lưu session
                     HttpContext.Session.SetString("UserName", user.userName);
                     HttpContext.Session.SetInt32("IsAdmin", user.isAdmin ? 1 : 0);
 
-                    // Kiểm tra role và chuyển hướng
                     if (user.isAdmin)
-                    {
-                        Console.WriteLine($"Admin session: {HttpContext.Session.GetInt32("IsAdmin")}");
-                        return RedirectToAction("Index", "Admin"); // Đảm bảo tên controller đúng
-                    }
+                        return RedirectToAction("Index", "Admin");
                     else
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
+                        return RedirectToAction("chucNangUser", "User");
                 }
-
-                ModelState.AddModelError("", "Tên đăng nhập hoặc mật khẩu không đúng.");
+                TempData["ErrorMessage"] = "Tên đăng nhập hoặc mật khẩu không đúng.";
             }
-
             return View(model);
         }
+
+        // Phương thức để kiểm tra mật khẩu
+        private bool VerifyPassword(string inputPassword, string storedHashedPassword)
+        {
+            // Implement password verification using hashing (e.g., BCrypt, PBKDF2)
+            // Ví dụ sử dụng BCrypt:
+            // return BCrypt.Verify(inputPassword, storedHashedPassword);
+
+            // Hoặc tạm thời cho test:
+            return inputPassword == storedHashedPassword; // Không dùng cách này trong production!
+        }
+
+        // GET: Đăng xuất
         public IActionResult DangXuat()
         {
             HttpContext.Session.Clear();
             return RedirectToAction("DangNhap", "Account");
         }
-        // GET: Display Register Page
+
+        // GET: Hiển thị trang đăng ký
         [HttpGet]
         public IActionResult DangKy()
         {
             return View();
         }
 
-        // POST: Handle Registration
+        // POST: Xử lý đăng ký
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult DangKy(nguoiDung model)
         {
             if (ModelState.IsValid)
             {
-                // Kiểm tra xem username đã tồn tại chưa
                 var existingUser = _context.nguoiDung.FirstOrDefault(u => u.userName == model.userName);
                 if (existingUser != null)
                 {
@@ -81,13 +90,13 @@ namespace quanLiQuanNe.Controllers
                     return View(model);
                 }
 
-                // Mặc định không phải admin khi đăng ký
-                model.isAdmin = false;
+                // Không mã hóa mật khẩu
+                model.isAdmin = false; // Mặc định không phải admin
 
                 _context.nguoiDung.Add(model);
                 _context.SaveChanges();
 
-                // Sau khi đăng ký thành công, chuyển sang trang đăng nhập
+                TempData["SuccessMessage"] = "Đăng ký thành công! Vui lòng đăng nhập.";
                 return RedirectToAction("DangNhap", "Account");
             }
 
