@@ -1,0 +1,55 @@
+﻿@model quanLiQuanNe.Models.nguoiDung
+@{
+    ViewData["Title"] = "Đăng ký tài khoản";
+}
+
+<div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="card shadow p-4" style="width: 400px; border-radius: 15px;">
+        <h2 class="text-center mb-4">Đăng ký tài khoản</h2>
+
+        <form asp-action="DangKy" asp-controller="Account" method="post">
+            @Html.AntiForgeryToken()
+
+            @if (ViewData.ModelState[""]?.Errors.Count > 0)
+            {
+                <div class="alert alert-danger">
+                    @Html.ValidationSummary(true)
+                </div>
+            }
+
+            <div class="form-group mb-3">
+                <label asp-for="userName" class="form-label">Tên đăng nhập:</label>
+                <input asp-for="userName" class="form-control" />
+                <span asp-validation-for="userName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="passWord" class="form-label">Mật khẩu:</label>
+                <input asp-for="passWord" type="password" class="form-control" />
+                <span asp-validation-for="passWord" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="hoTen" class="form-label">Họ tên:</label>
+                <input asp-for="hoTen" class="form-control" />
+                <span asp-validation-for="hoTen" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="sdt" class="form-label">Số điện thoại:</label>
+                <input asp-for="sdt" class="form-control" />
+                <span asp-validation-for="sdt" class="text-danger"></span>
+            </div>
+
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-primary">Đăng ký</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
