@@ -1,40 +1,86 @@
-﻿@model IEnumerable<quanLiQuanNe.Models.suDungMay>
+﻿@model quanLiQuanNe.Models.CombinedViewModel
 
 <div class="container">
-    <h1>Lịch sử sử dụng máy tính</h1>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h3>Thông tin tài khoản</h3>
+                </div>
+                <div class="card-body">
+                    @if (Model.UserInfo != null)
+                    {
+                        <p><strong>Tên đăng nhập:</strong> @Model.UserInfo.userName</p>
+                        <p><strong>Họ tên:</strong> @Model.UserInfo.hoTen</p>
+                        <p><strong>SĐT:</strong> @Model.UserInfo.sdt</p>
+                        <p><strong>Loại tài khoản:</strong> @(Model.UserInfo.isAdmin ? "Admin" : "Người dùng")</p>
+                        <p><strong>Số dư:</strong> @Model.UserInfo.soDu VNĐ</p>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            Không tìm thấy thông tin người dùng.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Mã Người Dùng</th>
-                <th>Mã Máy</th>
-                <th>Thời Gian Bắt Đầu</th>
-                <th>Thời Gian Kết Thúc</th>
-                <th>Tổng Tiền</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var suDung in Model)
-            {
-                <tr>
-                    <td>@suDung.Id</td>
-                    <td>@suDung.maNguoiDung</td>
-                    <td>@suDung.maMay</td>
-                    <td>@suDung.thoiGianBatDau.ToString("dd/MM/yyyy HH:mm")</td>
-                    <td>
-                        @if (suDung.thoiGianKetThuc.HasValue)
-                        {
-                            @suDung.thoiGianKetThuc.Value.ToString("dd/MM/yyyy HH:mm")
-                        }
-                        else
-                        {
-                            <span>Chưa kết thúc</span>
-                        }
-                    </td>
-                    <td>@suDung.tongTien</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h3>Lịch sử sử dụng máy tính</h3>
+                </div>
+                <div class="card-body">
+                    @if (Model.UsageHistory != null && Model.UsageHistory.Any())
+                    {
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Mã Máy</th>
+                                    <th>Thời Gian Bắt Đầu</th>
+                                    <th>Thời Gian Kết Thúc</th>
+                                    <th>Tổng Tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var suDung in Model.UsageHistory)
+                                {
+                                    <tr>
+                                        <td>@suDung.Id</td>
+                                        <td>@suDung.maMay</td>
+                                        <td>@suDung.thoiGianBatDau.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td>
+                                            @if (suDung.thoiGianKetThuc.HasValue)
+                                            {
+                                                @suDung.thoiGianKetThuc.Value.ToString("dd/MM/yyyy HH:mm")
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-warning text-dark">Đang sử dụng</span>
+                                            }
+                                        </td>
+                                        <td>@suDung.tongTien VNĐ</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            Bạn chưa có lịch sử sử dụng máy tính nào.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12 text-center">
+            <a href="@Url.Action("GameSelection", "User")" class="btn btn-primary btn-lg">Chọn máy để chơi</a>
+        </div>
+    </div>
 </div>

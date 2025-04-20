@@ -17,5 +17,6 @@ namespace quanLiQuanNe.Data
         public DbSet<quanLiQuanNe.Models.mayTinh> mayTinh { get; set; } = default!;
         public DbSet<quanLiQuanNe.Models.nguoiDung> nguoiDung { get; set; } = default!;
         public DbSet<quanLiQuanNe.Models.suDungMay> suDungMay { get; set; } = default!;
+        public DbSet<Game> Game { get; set; } // Thêm DbSet cho Game
     }
 }

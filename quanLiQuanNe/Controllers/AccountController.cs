@@ -29,25 +29,43 @@ namespace quanLiQuanNe.Controllers
         // POST: Xử lý đăng nhập
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult DangNhap(LoginViewModel model)
+        public IActionResult DangNhap(nguoiDung model)
         {
+            // Bỏ qua việc xác thực các trường không cần thiết khi đăng nhập
+            ModelState.Remove("hoTen");
+            ModelState.Remove("sdt");
+            ModelState.Remove("soDu");
+
             if (ModelState.IsValid)
             {
-                var user = _context.nguoiDung
-                    .FirstOrDefault(u => u.userName == model.userName && u.passWord == model.passWord);
+                // Kiểm tra riêng username trước
+                var user = _context.nguoiDung.FirstOrDefault(u => u.userName == model.userName);
 
-                if (user != null)
+                if (user == null)
                 {
-                    HttpContext.Session.SetString("UserName", user.userName);
-                    HttpContext.Session.SetInt32("IsAdmin", user.isAdmin ? 1 : 0);
-
-                    if (user.isAdmin)
-                        return RedirectToAction("Index", "Admin");
-                    else
-                        return RedirectToAction("chucNangUser", "User");
+                    Console.WriteLine($"Không tìm thấy user với username: {model.userName}");
+                    TempData["ErrorMessage"] = "Tên đăng nhập không tồn tại.";
+                    return View(model);
                 }
-                TempData["ErrorMessage"] = "Tên đăng nhập hoặc mật khẩu không đúng.";
+
+                // Kiểm tra password
+                if (user.passWord != model.passWord)
+                {
+                    Console.WriteLine($"Mật khẩu không đúng cho user: {model.userName}");
+                    TempData["ErrorMessage"] = "Mật khẩu không đúng.";
+                    return View(model);
+                }
+
+                // Đăng nhập thành công
+                HttpContext.Session.SetString("UserName", user.userName);
+                HttpContext.Session.SetInt32("IsAdmin", user.isAdmin ? 1 : 0);
+
+                if (user.isAdmin)
+                    return RedirectToAction("Index", "Admin");
+                else
+                    return RedirectToAction("chucNangUser", "User");
             }
+
             return View(model);
         }
 

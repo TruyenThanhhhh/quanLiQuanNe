@@ -1,39 +1,52 @@
 ﻿@model quanLiQuanNe.Models.mayTinh
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Xóa máy tính";
 }
 
-<h1>Delete</h1>
+<style>
+    .card-delete {
+        border-radius: 20px;
+        background: #fff;
+        padding: 30px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        max-width: 600px;
+    }
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>mayTinh</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.trangThai)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.trangThai)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.donGia)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.donGia)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+    .label-bold {
+        font-weight: bold;
+        color: #444;
+    }
+
+    .value-text {
+        color: #333;
+    }
+</style>
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card-delete">
+        <h2 class="text-center text-danger mb-4">⚠️ Xác nhận xoá máy tính</h2>
+        <p class="text-center text-secondary">Bạn có chắc chắn muốn xoá máy sau không?</p>
+        <hr />
+
+        <dl class="row">
+            <dt class="col-sm-4 label-bold">Tên máy:</dt>
+            <dd class="col-sm-8 value-text">@Model.name</dd>
+
+            <dt class="col-sm-4 label-bold">Trạng thái:</dt>
+            <dd class="col-sm-8 value-text">@Model.trangThai</dd>
+
+            <dt class="col-sm-4 label-bold">Đơn giá (VNĐ/giờ):</dt>
+            <dd class="col-sm-8 value-text">@Model.donGia</dd>
+        </dl>
+
+        <form asp-action="Delete" method="post">
+            <input type="hidden" asp-for="id" />
+
+            <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-danger">🗑️ Xác nhận xoá</button>
+                <a asp-action="Index" class="btn btn-secondary">← Quay lại danh sách</a>
+            </div>
+        </form>
+    </div>
 </div>

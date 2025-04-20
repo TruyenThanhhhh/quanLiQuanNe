@@ -2,70 +2,80 @@
     ViewData["Title"] = "Quản lý Quán Net";
 }
 
-<div class="container mt-4">
-    <div class="card shadow p-4">
-        <h2 class="mb-3 text-center text-primary">Chào mừng Quản Trị Viên: <strong>@ViewBag.UserName</strong></h2>
-        <p class="text-center">Trang quản lý hệ thống quán net. Bạn có thể kiểm tra và quản lý các hoạt động của quán tại đây.</p>
-        <hr />
+<style>
+    body {
+        background: linear-gradient(to right, #fefcea, #f1daff);
+    }
 
-        <!-- Chức năng quản lý người dùng và máy tính -->
-        <div class="row text-center mt-4">
-            <!-- Quản lý người dùng -->
-            <div class="col-md-4 mb-3">
-                <a class="btn btn-outline-primary w-100 py-2" asp-controller="User" asp-action="Index">
+    .admin-card {
+        border-radius: 25px;
+        background: #ffffff;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+    }
+
+    .admin-title {
+        font-weight: 700;
+        font-size: 1.8rem;
+        color: #0077cc;
+    }
+
+    .admin-subtitle {
+        color: #666;
+        font-size: 1rem;
+        margin-bottom: 30px;
+    }
+
+    .admin-btn {
+        font-size: 1.1rem;
+        padding: 14px;
+        border-radius: 15px;
+        transition: transform 0.2s ease;
+    }
+
+        .admin-btn:hover {
+            transform: scale(1.03);
+        }
+
+    .section-divider {
+        border-top: 2px dashed #ccc;
+        margin: 30px 0;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="admin-card mx-auto" style="max-width: 900px;">
+        <h2 class="text-center admin-title">👋 Chào mừng Quản Trị Viên: <strong>@ViewBag.UserName</strong></h2>
+        <p class="text-center admin-subtitle">Trang quản lý hệ thống quán net. Bạn có thể kiểm tra và quản lý các hoạt động tại đây.</p>
+
+        <hr class="section-divider" />
+
+        <!-- Chức năng chính -->
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <a class="btn btn-primary admin-btn w-100 shadow" asp-controller="Admin" asp-action="Index1">
                     📋 Quản lý người dùng
                 </a>
             </div>
-
-            <!-- Quản lý thiết bị máy tính -->
-            <div class="col-md-4 mb-3">
-                <a class="btn btn-outline-info w-100 py-2" asp-controller="May" asp-action="Index">
+            <div class="col-md-4 mb-4">
+                <a class="btn btn-info text-white admin-btn w-100 shadow" asp-controller="mayTinhs" asp-action="Index">
                     💻 Quản lý thiết bị
                 </a>
             </div>
-
-            <!-- Báo cáo và thống kê -->
-            <div class="col-md-4 mb-3">
-                <a class="btn btn-outline-success w-100 py-2" asp-controller="ThongKe" asp-action="Index">
+            <div class="col-md-4 mb-4">
+                <a class="btn btn-success admin-btn w-100 shadow" asp-controller="suDungMays" asp-action="Index">
                     📊 Báo cáo & Thống kê
                 </a>
             </div>
         </div>
 
-        <hr />
+        <hr class="section-divider" />
 
-        <!-- Chức năng quản lý tài chính -->
-        <div class="row text-center mt-4">
-            <!-- Quản lý tài chính -->
-            <div class="col-md-6 mb-3">
-                <a class="btn btn-outline-warning w-100 py-2" asp-controller="TaiChinh" asp-action="Index">
-                    💵 Quản lý tài chính
-                </a>
-            </div>
-
-            <!-- Xem lịch sử giao dịch -->
-            <div class="col-md-6 mb-3">
-                <a class="btn btn-outline-danger w-100 py-2" asp-controller="GiaoDich" asp-action="Index">
-                    📅 Lịch sử giao dịch
-                </a>
-            </div>
-        </div>
-
-        <hr />
-
-        <!-- Chức năng quản lý hệ thống -->
-        <div class="row text-center mt-4">
-            <!-- Cài đặt hệ thống -->
-            <div class="col-md-6 mb-3">
-                <a class="btn btn-outline-dark w-100 py-2" asp-controller="System" asp-action="Settings">
-                    ⚙️ Cài đặt hệ thống
-                </a>
-            </div>
-
-            <!-- Quản lý báo cáo sự cố -->
-            <div class="col-md-6 mb-3">
-                <a class="btn btn-outline-info w-100 py-2" asp-controller="SuCo" asp-action="Index">
-                    🚨 Quản lý sự cố
+        <!-- Quản lý tài chính -->
+        <div class="row text-center">
+            <div class="col-12">
+                <a class="btn btn-outline-warning admin-btn fw-bold w-100 shadow" asp-controller="suDungMays" asp-action="ThongKe">
+                    📈 Thống kê doanh thu (sử dụng máy)
                 </a>
             </div>
         </div>

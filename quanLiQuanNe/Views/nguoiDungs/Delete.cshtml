@@ -1,57 +1,48 @@
 ﻿@model quanLiQuanNe.Models.nguoiDung
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Xoá người dùng";
 }
 
-<h1>Delete</h1>
+<div class="container mt-5">
+    <div class="card shadow-lg border-danger" style="border-radius: 15px;">
+        <div class="card-header bg-danger text-white text-center">
+            <h3>⚠️ Xác nhận xoá người dùng</h3>
+        </div>
+        <div class="card-body">
+            <p class="text-center text-secondary">Bạn có chắc chắn muốn xoá người dùng này không? Hành động này không thể hoàn tác.</p>
+            <hr />
+            <dl class="row">
+                <dt class="col-sm-4">👤 Tên đăng nhập</dt>
+                <dd class="col-sm-8">@Model.userName</dd>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>nguoiDung</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.userName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.userName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.passWord)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.passWord)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.hoTen)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.hoTen)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.sdt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.sdt)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.isAdmin)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.isAdmin)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.soDu)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.soDu)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+                <dt class="col-sm-4">🔐 Mật khẩu</dt>
+                <dd class="col-sm-8">@Model.passWord</dd>
+
+                <dt class="col-sm-4">🪪 Họ tên</dt>
+                <dd class="col-sm-8">@Model.hoTen</dd>
+
+                <dt class="col-sm-4">📞 Số điện thoại</dt>
+                <dd class="col-sm-8">@Model.sdt</dd>
+
+                <dt class="col-sm-4">🛡️ Quyền quản trị</dt>
+                <dd class="col-sm-8">
+                    @(Model.isAdmin ? "✔️ Quản trị viên" : "👤 Người dùng")
+                </dd>
+
+                <dt class="col-sm-4">💰 Số dư tài khoản</dt>
+                <dd class="col-sm-8">@Model.soDu.ToString() VNĐ</dd>
+            </dl>
+
+            <form asp-action="Delete" method="post" class="mt-4">
+                <input type="hidden" asp-for="Id" />
+                <div class="d-flex justify-content-center gap-3">
+                    <button type="submit" class="btn btn-danger px-4">
+                        🗑️ Xoá ngay
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary px-4">← Quay lại</a>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>

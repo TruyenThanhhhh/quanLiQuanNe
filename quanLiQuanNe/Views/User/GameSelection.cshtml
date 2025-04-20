@@ -1,0 +1,56 @@
+﻿@model IEnumerable<quanLiQuanNe.Models.mayTinh>
+
+@{
+    ViewData["Title"] = "Chọn trò chơi";
+}
+
+<div class="container">
+    <h1 class="text-center my-4">Chọn máy tính để chơi game</h1>
+
+    <div class="row">
+        @foreach (var mayTinh in Model)
+        {
+            // Chuẩn hóa trạng thái để tránh lỗi do viết hoa/thường
+            var trangThai = mayTinh.trangThai?.Trim().ToLower();
+
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">@mayTinh.name</h5>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <p class="card-text">
+                            <strong>Trạng thái:</strong>
+                            <span class="badge @(trangThai == "trống" ? "bg-success" : "bg-danger")">
+                                @(trangThai == "trống" ? "Trống" : "Đang sử dụng")
+                            </span>
+                        </p>
+                        <p class="card-text"><strong>Đơn giá:</strong> @mayTinh.donGia VNĐ/giờ</p>
+
+                        @if (trangThai == "trống")
+                        {
+                            <form asp-action="SelectGame" method="post" class="mt-auto">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="mayTinhId" value="@mayTinh.id" />
+                                <button type="submit" class="btn btn-primary w-100">Chọn máy này</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <button class="btn btn-secondary w-100 mt-auto" disabled>Đang sử dụng</button>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12 text-center">
+            <form asp-action="Logout" asp-controller="User" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-danger">Đăng xuất</button>
+            </form>
+        </div>
+    </div>
+</div>

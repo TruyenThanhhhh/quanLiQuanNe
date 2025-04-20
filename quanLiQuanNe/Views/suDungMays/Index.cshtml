@@ -1,59 +1,61 @@
-﻿@model IEnumerable<quanLiQuanNe.Models.suDungMay>
+﻿@model quanLiQuanNe.ViewModels.SuDungMayIndexViewModel
 
-@{
-    ViewData["Title"] = "Index";
-}
+<form method="get" class="card p-3 mb-4 shadow-sm">
+    <div class="row g-3">
+        <div class="col-md-3">
+            <label asp-for="TuNgay" class="form-label">Từ ngày</label>
+            <input asp-for="TuNgay" class="form-control" type="date" />
+        </div>
+        <div class="col-md-3">
+            <label asp-for="DenNgay" class="form-label">Đến ngày</label>
+            <input asp-for="DenNgay" class="form-control" type="date" />
+        </div>
+        <div class="col-md-3">
+            <label asp-for="MaMay" class="form-label">Máy</label>
+            <select asp-for="MaMay" asp-items="Model.DanhSachMay" class="form-select">
+                <option value="">-- Tất cả --</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label asp-for="MaNguoiDung" class="form-label">Người dùng</label>
+            <select asp-for="MaNguoiDung" asp-items="Model.DanhSachNguoiDung" class="form-select">
+                <option value="">-- Tất cả --</option>
+            </select>
+        </div>
+    </div>
+    <div class="mt-3 text-end">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-filter"></i> Lọc
+        </button>
+    </div>
+</form>
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
+<table class="table table-bordered table-hover">
+    <thead class="table-light">
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.maNguoiDung)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.maMay)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.thoiGianBatDau)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.thoiGianKetThuc)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.tongTien)
-            </th>
+            <th>Người dùng</th>
+            <th>Máy</th>
+            <th>Bắt đầu</th>
+            <th>Kết thúc</th>
+            <th>Tổng tiền</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.maNguoiDung)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.maMay)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.thoiGianBatDau)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.thoiGianKetThuc)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.tongTien)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.DanhSachSuDung)
+        {
+            <tr>
+                <td>@item.maNguoiDung</td>
+                <td>@item.maMay</td>
+                <td>@item.thoiGianBatDau.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@item.thoiGianKetThuc?.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@item.tongTien</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Sửa</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Chi tiết</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Xoá</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

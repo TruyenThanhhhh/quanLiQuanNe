@@ -1,44 +1,44 @@
 ﻿@model quanLiQuanNe.Models.mayTinh
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Chỉnh sửa máy tính";
 }
 
-<h1>Edit</h1>
-
-<h4>mayTinh</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card shadow p-4" style="width: 500px; border-radius: 15px;">
+        <h2 class="text-center mb-4 text-primary">🛠️ Chỉnh sửa thông tin máy</h2>
+        <form asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
             <input type="hidden" asp-for="id" />
-            <div class="form-group">
-                <label asp-for="name" class="control-label"></label>
+
+            <div class="form-group mb-3">
+                <label asp-for="name" class="form-label">Tên máy:</label>
                 <input asp-for="name" class="form-control" />
                 <span asp-validation-for="name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="trangThai" class="control-label"></label>
+
+            <div class="form-group mb-3">
+                <label asp-for="trangThai" class="form-label">Trạng thái:</label>
                 <input asp-for="trangThai" class="form-control" />
                 <span asp-validation-for="trangThai" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="donGia" class="control-label"></label>
+
+            <div class="form-group mb-3">
+                <label asp-for="donGia" class="form-label">Đơn giá (VNĐ/giờ):</label>
                 <input asp-for="donGia" class="form-control" />
                 <span asp-validation-for="donGia" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+
+            <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-success">💾 Lưu thay đổi</button>
+                <a asp-action="Index" class="btn btn-secondary">← Quay lại danh sách</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

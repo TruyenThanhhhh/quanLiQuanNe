@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "Xác nhận chơi game";
+}
+
+<div class="container">
+    <h1 class="text-center my-4">Xác nhận chơi game</h1>
+
+    <div class="card">
+        <div class="card-header bg-success text-white">
+            <h5 class="card-title mb-0">Thông báo</h5>
+        </div>
+        <div class="card-body">
+            <p>Bạn đang chơi game: <strong>@ViewData["GameName"]</strong></p>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12 text-center">
+            <a asp-action="GamePlaying" asp-controller="User" class="btn btn-primary">Quay lại chọn game</a>
+            <form asp-action="Logout" asp-controller="User" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-danger">Kết thúc và đăng xuất</button>
+            </form>
+        </div>
+    </div>
+</div>

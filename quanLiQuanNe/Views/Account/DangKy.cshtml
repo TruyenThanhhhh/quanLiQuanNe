@@ -3,53 +3,106 @@
     ViewData["Title"] = "Đăng ký tài khoản";
 }
 
-<div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
-    <div class="card shadow p-4" style="width: 400px; border-radius: 15px;">
-        <h2 class="text-center mb-4">Đăng ký tài khoản</h2>
+<style>
+    body {
+        background: linear-gradient(to right, #fffce0, #ffe4e1);
+    }
 
-        <form asp-action="DangKy" asp-controller="Account" method="post">
-            @Html.AntiForgeryToken()
+    .register-box {
+        max-width: 480px;
+        margin: 60px auto;
+        padding: 40px;
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
 
-            @if (ViewData.ModelState[""]?.Errors.Count > 0)
-            {
-                <div class="alert alert-danger">
-                    @Html.ValidationSummary(true)
-                </div>
+    .register-title {
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.6rem;
+        margin-bottom: 25px;
+        color: #333;
+    }
+
+    .form-control {
+        border-radius: 12px;
+        padding: 12px 15px;
+        font-size: 1rem;
+    }
+
+    .btn-register {
+        background: linear-gradient(to right, #007bff, #0056b3);
+        border: none;
+        padding: 12px;
+        border-radius: 12px;
+        font-weight: bold;
+        font-size: 1rem;
+    }
+
+    .form-footer {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+        .form-footer a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+            .form-footer a:hover {
+                text-decoration: underline;
             }
+</style>
 
-            <div class="form-group mb-3">
-                <label asp-for="userName" class="form-label">Tên đăng nhập:</label>
-                <input asp-for="userName" class="form-control" />
-                <span asp-validation-for="userName" class="text-danger"></span>
-            </div>
+<div class="register-box">
+    <h2 class="register-title">Đăng ký tài khoản</h2>
 
-            <div class="form-group mb-3">
-                <label asp-for="passWord" class="form-label">Mật khẩu:</label>
-                <input asp-for="passWord" type="password" class="form-control" />
-                <span asp-validation-for="passWord" class="text-danger"></span>
-            </div>
+    @if (ViewData.ModelState[""]?.Errors.Count > 0)
+    {
+        <div class="alert alert-danger">
+            @Html.ValidationSummary(true)
+        </div>
+    }
 
-            <div class="form-group mb-3">
-                <label asp-for="hoTen" class="form-label">Họ tên:</label>
-                <input asp-for="hoTen" class="form-control" />
-                <span asp-validation-for="hoTen" class="text-danger"></span>
-            </div>
+    <form asp-action="DangKy" asp-controller="Account" method="post">
+        @Html.AntiForgeryToken()
 
-            <div class="form-group mb-3">
-                <label asp-for="sdt" class="form-label">Số điện thoại:</label>
-                <input asp-for="sdt" class="form-control" />
-                <span asp-validation-for="sdt" class="text-danger"></span>
-            </div>
+        <div class="mb-3">
+            <label asp-for="userName" class="form-label">Tên đăng nhập</label>
+            <input asp-for="userName" class="form-control" placeholder="e.g. yourusername" />
+            <span asp-validation-for="userName" class="text-danger"></span>
+        </div>
 
-            <div class="d-grid mt-4">
-                <button type="submit" class="btn btn-primary">Đăng ký</button>
-            </div>
-        </form>
+        <div class="mb-3">
+            <label asp-for="passWord" class="form-label">Mật khẩu</label>
+            <input asp-for="passWord" type="password" class="form-control" placeholder="e.g. yourpassword123" />
+            <span asp-validation-for="passWord" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="hoTen" class="form-label">Họ tên</label>
+            <input asp-for="hoTen" class="form-control" placeholder="e.g. Nguyễn Văn A" />
+            <span asp-validation-for="hoTen" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="sdt" class="form-label">Số điện thoại</label>
+            <input asp-for="sdt" class="form-control" placeholder="e.g. 0987654321" />
+            <span asp-validation-for="sdt" class="text-danger"></span>
+        </div>
+
+        <div class="d-grid mt-4">
+            <button type="submit" class="btn btn-register w-100">Đăng ký</button>
+        </div>
+    </form>
+
+    <div class="form-footer">
+        <p>Đã có tài khoản? <a asp-action="DangNhap" asp-controller="Account">Đăng nhập tại đây</a></p>
     </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }

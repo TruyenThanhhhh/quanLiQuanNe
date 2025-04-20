@@ -1,0 +1,56 @@
+﻿@model IEnumerable<quanLiQuanNe.Models.suDungMay>
+
+@{
+    ViewData["Title"] = "Thống kê doanh thu";
+}
+
+<h2>📊 Thống kê doanh thu từ sử dụng máy</h2>
+
+<div class="alert alert-success">
+    <p><strong>Tổng lượt sử dụng:</strong> @ViewBag.SoLuot</p>
+    <p><strong>Tổng doanh thu:</strong> @ViewBag.TongThu.ToString("C")</p>
+</div>
+
+<h4 class="mt-4">📅 Doanh thu theo ngày</h4>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Ngày</th>
+            <th>Doanh thu</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in ViewBag.DoanhThuTheoNgay)
+        {
+            <tr>
+                <td>@item.Ngay.ToString("dd/MM/yyyy")</td>
+                <td>@item.Tong.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h4 class="mt-4">📋 Chi tiết lượt sử dụng</h4>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Người dùng</th>
+            <th>Máy</th>
+            <th>Bắt đầu</th>
+            <th>Kết thúc</th>
+            <th>Tổng tiền</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.maNguoiDung</td>
+                <td>@item.maMay</td>
+                <td>@item.thoiGianBatDau</td>
+                <td>@item.thoiGianKetThuc</td>
+                <td>@item.tongTien</td>
+            </tr>
+        }
+    </tbody>
+</table>

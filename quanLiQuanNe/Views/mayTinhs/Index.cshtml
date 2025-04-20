@@ -1,47 +1,63 @@
 ﻿@model IEnumerable<quanLiQuanNe.Models.mayTinh>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Danh sách máy tính";
 }
 
-<h1>Index</h1>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-primary">Danh sách máy tính</h2>
+        <a class="btn btn-success" asp-action="Create">
+            <i class="bi bi-plus-circle"></i> Thêm máy mới
+        </a>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.trangThai)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.donGia)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.trangThai)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.donGia)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover table-bordered table-striped mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.First().name)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().trangThai)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().donGia)</th>
+                        <th class="text-center">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.name)</td>
+                            <td>
+                                @if (item.trangThai == "Hoạt động")
+                                {
+                                    <span class="badge bg-success">Hoạt động</span>
+                                }
+                                else if (item.trangThai == "Bảo trì")
+                                {
+                                    <span class="badge bg-warning text-dark">Bảo trì</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">@item.trangThai</span>
+                                }
+                            </td>
+                            <td>@String.Format("{0:N0}₫", item.donGia)</td>
+                            <td class="text-center">
+                                <a class="btn btn-sm btn-primary me-1" asp-action="Edit" asp-route-id="@item.id">
+                                    <i class="bi bi-pencil-square"></i> Sửa
+                                </a>
+                                <a class="btn btn-sm btn-info text-white me-1" asp-action="Details" asp-route-id="@item.id">
+                                    <i class="bi bi-info-circle"></i> Chi tiết
+                                </a>
+                                <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.id">
+                                    <i class="bi bi-trash"></i> Xóa
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
