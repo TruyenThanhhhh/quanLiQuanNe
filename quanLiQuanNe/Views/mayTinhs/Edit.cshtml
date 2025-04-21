@@ -4,34 +4,55 @@
     ViewData["Title"] = "Chỉnh sửa máy tính";
 }
 
+<style>
+    .card-edit {
+        border-radius: 20px;
+        background: #ffffff;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        max-width: 550px;
+    }
+
+    .btn-custom {
+        padding: 10px 20px;
+        font-size: 1.1rem;
+        border-radius: 10px;
+    }
+
+    .form-label {
+        font-weight: 600;
+    }
+</style>
+
 <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
-    <div class="card shadow p-4" style="width: 500px; border-radius: 15px;">
-        <h2 class="text-center mb-4 text-primary">🛠️ Chỉnh sửa thông tin máy</h2>
-        <form asp-action="Edit" method="post">
-            @Html.AntiForgeryToken()
+    <div class="card-edit">
+        <h2 class="text-center text-warning mb-4">✏️ Chỉnh sửa máy tính</h2>
+
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
             <input type="hidden" asp-for="id" />
 
-            <div class="form-group mb-3">
+            <div class="mb-3">
                 <label asp-for="name" class="form-label">Tên máy:</label>
-                <input asp-for="name" class="form-control" />
+                <input asp-for="name" class="form-control" placeholder="VD: Máy 01" />
                 <span asp-validation-for="name" class="text-danger"></span>
             </div>
 
-            <div class="form-group mb-3">
+            <div class="mb-3">
                 <label asp-for="trangThai" class="form-label">Trạng thái:</label>
-                <input asp-for="trangThai" class="form-control" />
+                <input asp-for="trangThai" class="form-control" placeholder="VD: Đang hoạt động" />
                 <span asp-validation-for="trangThai" class="text-danger"></span>
             </div>
 
-            <div class="form-group mb-3">
+            <div class="mb-3">
                 <label asp-for="donGia" class="form-label">Đơn giá (VNĐ/giờ):</label>
-                <input asp-for="donGia" class="form-control" />
+                <input asp-for="donGia" class="form-control" placeholder="VD: 10000" />
                 <span asp-validation-for="donGia" class="text-danger"></span>
             </div>
 
             <div class="d-grid gap-2 mt-4">
-                <button type="submit" class="btn btn-success">💾 Lưu thay đổi</button>
-                <a asp-action="Index" class="btn btn-secondary">← Quay lại danh sách</a>
+                <button type="submit" class="btn btn-warning btn-custom">💾 Lưu thay đổi</button>
+                <a asp-action="Index" class="btn btn-secondary btn-custom">← Quay lại danh sách</a>
             </div>
         </form>
     </div>

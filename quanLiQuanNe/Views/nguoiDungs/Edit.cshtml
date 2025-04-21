@@ -1,59 +1,82 @@
 ﻿@model quanLiQuanNe.Models.nguoiDung
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Chỉnh sửa người dùng";
 }
 
-<h1>Edit</h1>
+<style>
+    .card-edit {
+        border-radius: 20px;
+        background: #ffffff;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        max-width: 550px;
+    }
 
-<h4>nguoiDung</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+    .btn-custom {
+        padding: 10px 20px;
+        font-size: 1.1rem;
+        border-radius: 10px;
+    }
+
+    .form-label {
+        font-weight: 600;
+    }
+</style>
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card-edit">
+        <h2 class="text-center text-warning mb-4">✏️ Chỉnh sửa người dùng</h2>
+
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="userName" class="control-label"></label>
-                <input asp-for="userName" class="form-control" />
+
+            <div class="mb-3">
+                <label asp-for="userName" class="form-label">Tên đăng nhập:</label>
+                <input asp-for="userName" class="form-control" placeholder="VD: nguyenvana" />
                 <span asp-validation-for="userName" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="passWord" class="control-label"></label>
-                <input asp-for="passWord" class="form-control" />
+
+            <div class="mb-3">
+                <label asp-for="passWord" class="form-label">Mật khẩu:</label>
+                <input asp-for="passWord" type="password" class="form-control" placeholder="Nhập mật khẩu" />
                 <span asp-validation-for="passWord" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="hoTen" class="control-label"></label>
-                <input asp-for="hoTen" class="form-control" />
+
+            <div class="mb-3">
+                <label asp-for="hoTen" class="form-label">Họ và tên:</label>
+                <input asp-for="hoTen" class="form-control" placeholder="VD: Nguyễn Văn A" />
                 <span asp-validation-for="hoTen" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="sdt" class="control-label"></label>
-                <input asp-for="sdt" class="form-control" />
+
+            <div class="mb-3">
+                <label asp-for="sdt" class="form-label">Số điện thoại:</label>
+                <input asp-for="sdt" class="form-control" placeholder="VD: 0123456789" />
                 <span asp-validation-for="sdt" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="isAdmin" /> @Html.DisplayNameFor(model => model.isAdmin)
-                </label>
+
+            <div class="mb-3 form-check">
+                <input asp-for="isAdmin" class="form-check-input" />
+                <label asp-for="isAdmin" class="form-check-label">Quyền quản trị</label>
             </div>
-            <div class="form-group">
-                <label asp-for="soDu" class="control-label"></label>
-                <input asp-for="soDu" class="form-control" />
+
+            <div class="mb-3">
+                <label asp-for="soDu" class="form-label">Số dư (VNĐ):</label>
+                <input asp-for="soDu" class="form-control" placeholder="VD: 100000" />
                 <span asp-validation-for="soDu" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+
+            <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-warning btn-custom">💾 Lưu thay đổi</button>
+                <a asp-action="Index" class="btn btn-secondary btn-custom">← Quay lại danh sách</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

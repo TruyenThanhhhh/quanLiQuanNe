@@ -1,59 +1,128 @@
 ﻿@model quanLiQuanNe.Models.GamePlayingViewModel
 
 @{
-    ViewData["Title"] = "Đang chơi game";
+    ViewData["Title"] = "Chơi Game";
+    Layout = "_Layout";
 }
 
 <div class="container">
-    <h1 class="text-center my-4">Đang chơi game</h1>
+    <h1 class="text-center my-4">Chơi Game</h1>
 
-    @if (Model != null && Model.SuDungMay != null)
-    {
-        <div class="card mb-4">
-            <div class="card-header bg-success text-white">
-                <h5 class="card-title mb-0">Thông tin phiên chơi game</h5>
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">Thông tin máy</h5>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <p><strong>Tên máy:</strong> @Model.TenMay</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Đơn giá:</strong> @Model.DonGia VNĐ/giờ</p>
+                </div>
             </div>
-            <div class="card-body">
-                <p><strong>Máy tính:</strong> @Model.TenMay</p>
-                <p><strong>Thời gian bắt đầu:</strong> @Model.SuDungMay.thoiGianBatDau.ToString("dd/MM/yyyy HH:mm:ss")</p>
-                <p><strong>Đơn giá:</strong> @Model.DonGia VNĐ/giờ</p>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <p><strong>Thời gian bắt đầu:</strong> @Model.SuDungMay.thoiGianBatDau.ToString("dd/MM/yyyy HH:mm:ss")</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Thời gian còn lại:</strong> <span id="remaining-time" data-minutes="@Model.RemainingTimeInMinutes">Đang tính...</span></p>
+                </div>
             </div>
         </div>
+    </div>
 
-        <h3 class="text-center my-4">Chọn trò chơi</h3>
-        <div class="row">
-            @foreach (var game in Model.Games)
+    <div class="card">
+        <div class="card-header bg-success text-white">
+            <h5 class="card-title mb-0">Danh sách game</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.Games != null && Model.Games.Any())
             {
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="card-title mb-0">@game.Name</h5>
+                <div class="row">
+                    @foreach (var game in Model.Games)
+                    {
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">@game.Name</h5>
+                                    <p class="card-text">@game.Description</p>
+                                    <form asp-action="SelectGameToPlay" asp-controller="User" method="post">
+                                        <input type="hidden" name="gameId" value="@game.Id" />
+                                        <button type="submit" class="btn btn-primary">Chơi ngay</button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body d-flex flex-column">
-                            <p class="card-text">@game.Description</p>
-                            <form asp-action="SelectGameToPlay" method="post" class="mt-auto">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="gameId" value="@game.Id" />
-                                <button type="submit" class="btn btn-primary w-100">Chơi game này</button>
-                            </form>
-                        </div>
-                    </div>
+                    }
                 </div>
             }
+            else
+            {
+                <div class="alert alert-info">Không có game nào khả dụng.</div>
+            }
         </div>
+    </div>
 
-        <div class="row mt-4">
-            <div class="col-12 text-center">
-                <form asp-action="Logout" asp-controller="User" method="post">
-                    @Html.AntiForgeryToken()
-                    <button type="submit" class="btn btn-danger">Kết thúc và đăng xuất</button>
-                </form>
-            </div>
-        </div>
-    }
-    else
-    {
-        <p>Không tìm thấy thông tin phiên chơi game.</p>
-        <a asp-action="GameSelection" asp-controller="User" class="btn btn-primary">Quay lại chọn máy</a>
-    }
+    <div class="mt-4 text-center">
+        <form asp-action="Logout" asp-controller="User" method="post">
+            <button type="submit" class="btn btn-danger">Đăng xuất</button>
+        </form>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Hiển thị thời gian còn lại
+            const timerElement = document.getElementById('remaining-time');
+            const totalMinutes = parseFloat(timerElement.getAttribute('data-minutes'));
+            let totalSeconds = Math.floor(totalMinutes * 60);
+
+            function updateTimer() {
+                if (totalSeconds <= 0) {
+                    timerElement.innerHTML = '<span class="text-danger">Hết thời gian!</span>';
+                    return;
+                }
+
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
+
+                timerElement.textContent =
+                    (hours < 10 ? '0' + hours : hours) + ':' +
+                    (minutes < 10 ? '0' + minutes : minutes) + ':' +
+                    (seconds < 10 ? '0' + seconds : seconds);
+
+                totalSeconds--;
+            }
+
+            // Cập nhật timer mỗi giây
+            updateTimer();
+            setInterval(updateTimer, 1000);
+
+            // Gọi API để trừ tiền mỗi phút
+            function deductBalance() {
+                fetch('/User/DeductBalance', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        if (data.shouldLogout) {
+                            alert('Số dư của bạn đã hết. Bạn sẽ bị đăng xuất khỏi hệ thống.');
+                            document.querySelector('form[asp-action="Logout"]').submit();
+                        }
+                    }
+                })
+                .catch(error => console.error('Error deducting balance:', error));
+            }
+
+            // Trừ tiền mỗi phút
+            setInterval(deductBalance, 60000);
+        });
+    </script>
+}

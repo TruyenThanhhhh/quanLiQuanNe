@@ -7,45 +7,60 @@
 <style>
     .card-delete {
         border-radius: 20px;
-        background: #fff;
+        background: #ffffff;
         padding: 30px;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-        max-width: 600px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        max-width: 550px;
     }
 
-    .label-bold {
-        font-weight: bold;
-        color: #444;
+    .btn-custom {
+        padding: 10px 20px;
+        font-size: 1.1rem;
+        border-radius: 10px;
     }
 
-    .value-text {
-        color: #333;
+    .form-label {
+        font-weight: 600;
+    }
+
+    .details-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .details-list li {
+        margin-bottom: 15px;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 8px;
     }
 </style>
 
 <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
     <div class="card-delete">
-        <h2 class="text-center text-danger mb-4">⚠️ Xác nhận xoá máy tính</h2>
-        <p class="text-center text-secondary">Bạn có chắc chắn muốn xoá máy sau không?</p>
-        <hr />
+        <h2 class="text-center text-danger mb-4">⚠️ Xóa máy tính</h2>
+        <h3 class="text-center mb-4">Bạn có chắc chắn muốn xóa máy này?</h3>
 
-        <dl class="row">
-            <dt class="col-sm-4 label-bold">Tên máy:</dt>
-            <dd class="col-sm-8 value-text">@Model.name</dd>
+        <ul class="details-list">
+            <li>
+                <strong>Tên máy:</strong>
+                <span>@Html.DisplayFor(model => model.name)</span>
+            </li>
+            <li>
+                <strong>Trạng thái:</strong>
+                <span>@Html.DisplayFor(model => model.trangThai)</span>
+            </li>
+            <li>
+                <strong>Đơn giá:</strong>
+                <span>@Html.DisplayFor(model => model.donGia) VNĐ/giờ</span>
+            </li>
+        </ul>
 
-            <dt class="col-sm-4 label-bold">Trạng thái:</dt>
-            <dd class="col-sm-8 value-text">@Model.trangThai</dd>
-
-            <dt class="col-sm-4 label-bold">Đơn giá (VNĐ/giờ):</dt>
-            <dd class="col-sm-8 value-text">@Model.donGia</dd>
-        </dl>
-
-        <form asp-action="Delete" method="post">
+        <form asp-action="Delete" class="mt-4">
             <input type="hidden" asp-for="id" />
-
-            <div class="d-grid gap-2 mt-4">
-                <button type="submit" class="btn btn-danger">🗑️ Xác nhận xoá</button>
-                <a asp-action="Index" class="btn btn-secondary">← Quay lại danh sách</a>
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-danger btn-custom">🗑️ Xóa máy</button>
+                <a asp-action="Index" class="btn btn-secondary btn-custom">← Quay lại danh sách</a>
             </div>
         </form>
     </div>

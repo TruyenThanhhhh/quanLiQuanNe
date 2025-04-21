@@ -1,51 +1,82 @@
 ﻿@model quanLiQuanNe.Models.suDungMay
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Tạo phiếu sử dụng máy";
 }
 
-<h1>Create</h1>
+<style>
+    .card-create {
+        border-radius: 20px;
+        background: #ffffff;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        max-width: 550px;
+    }
 
-<h4>suDungMay</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+    .btn-custom {
+        padding: 10px 20px;
+        font-size: 1.1rem;
+        border-radius: 10px;
+    }
+
+    .form-label {
+        font-weight: 600;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        padding: 10px;
+        border: 1px solid #ced4da;
+    }
+
+    .form-control:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+</style>
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card-create">
+        <h2 class="text-center mb-4">📝 Tạo phiếu sử dụng máy</h2>
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="maNguoiDung" class="control-label"></label>
-                <input asp-for="maNguoiDung" class="form-control" />
+            
+            <div class="mb-3">
+                <label asp-for="maNguoiDung" class="form-label">👤 Người dùng</label>
+                <select asp-for="maNguoiDung" class="form-control" asp-items="ViewBag.maNguoiDung"></select>
                 <span asp-validation-for="maNguoiDung" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="maMay" class="control-label"></label>
-                <input asp-for="maMay" class="form-control" />
+
+            <div class="mb-3">
+                <label asp-for="maMay" class="form-label">💻 Máy tính</label>
+                <select asp-for="maMay" class="form-control" asp-items="ViewBag.maMay"></select>
                 <span asp-validation-for="maMay" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="thoiGianBatDau" class="control-label"></label>
-                <input asp-for="thoiGianBatDau" class="form-control" />
+
+            <div class="mb-3">
+                <label asp-for="thoiGianBatDau" class="form-label">⏱️ Thời gian bắt đầu</label>
+                <input asp-for="thoiGianBatDau" class="form-control" type="datetime-local" />
                 <span asp-validation-for="thoiGianBatDau" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="thoiGianKetThuc" class="control-label"></label>
-                <input asp-for="thoiGianKetThuc" class="form-control" />
+
+            <div class="mb-3">
+                <label asp-for="thoiGianKetThuc" class="form-label">⏱️ Thời gian kết thúc</label>
+                <input asp-for="thoiGianKetThuc" class="form-control" type="datetime-local" />
                 <span asp-validation-for="thoiGianKetThuc" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="tongTien" class="control-label"></label>
-                <input asp-for="tongTien" class="form-control" />
+
+            <div class="mb-3">
+                <label asp-for="tongTien" class="form-label">💰 Tổng tiền</label>
+                <input asp-for="tongTien" class="form-control" type="number" step="0.01" />
                 <span asp-validation-for="tongTien" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-custom">💾 Lưu phiếu</button>
+                <a asp-action="Index" class="btn btn-secondary btn-custom">← Quay lại danh sách</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

@@ -183,7 +183,147 @@ namespace quanLiQuanNe.Controllers
 
             return RedirectToAction("Index1");
         }
+        [HttpGet]
+        public IActionResult GetUserUpdates()
+        {
+            var activeUsers = _context.suDungMay
+                .Where(s => s.thoiGianKetThuc == null)
+                .Select(s => new {
+                    SessionId = s.Id,
+                    UserId = s.maNguoiDung,
+                    MachineId = s.maMay,
+                    StartTime = s.thoiGianBatDau,
+                    Total = s.tongTien
+                })
+                .ToList();
 
+            var userIds = activeUsers.Select(u => u.UserId).ToList();
+            var users = _context.nguoiDung
+                .Where(u => userIds.Contains(u.userName))
+                .Select(u => new {
+                    UserId = u.userName,
+                    Balance = u.soDu
+                })
+                .ToDictionary(u => u.UserId, u => u.Balance);
+
+            var machineIds = activeUsers.Select(u => int.TryParse(u.MachineId, out int id) ? id : -1)
+                .Where(id => id != -1)
+                .ToList();
+
+            var machines = _context.mayTinh
+                .Where(m => machineIds.Contains(m.id))
+                .Select(m => new {
+                    Id = m.id,
+                    Rate = m.donGia
+                })
+                .ToDictionary(m => m.Id, m => m.Rate);
+
+            var result = activeUsers.Select(session => {
+                int.TryParse(session.MachineId, out int machineId);
+                var user = users.GetValueOrDefault(session.UserId, "0");
+                var rate = machines.GetValueOrDefault(machineId, "0");
+
+                double remainingTime = 0;
+                if (int.TryParse(user, out int balance) &&
+                    int.TryParse(rate, out int hourlyRate) &&
+                    hourlyRate > 0)
+                {
+                    remainingTime = (balance / (double)hourlyRate) * 60; // minutes
+                }
+
+                return new
+                {
+                    session.SessionId,
+                    session.UserId,
+                    session.MachineId,
+                    Balance = user,
+                    HourlyRate = rate,
+                    RemainingTimeInMinutes = remainingTime,
+                    session.Total
+                };
+            }).ToList();
+
+            return Json(result);
+        }
+
+        public IActionResult Statistics()
+        {
+            // Get all active sessions
+            var activeSessions = _context.suDungMay
+                .Where(s => s.thoiGianKetThuc == null)
+                .ToList();
+
+            var userActivities = new List<UserActivityViewModel>();
+
+            foreach (var session in activeSessions)
+            {
+                // Get user info
+                var user = _context.nguoiDung.FirstOrDefault(u => u.userName == session.maNguoiDung);
+                if (user == null) continue;
+
+                // Get computer info
+                mayTinh computer = null;
+                if (int.TryParse(session.maMay, out int mayTinhId))
+                {
+                    computer = _context.mayTinh.Find(mayTinhId);
+                }
+                if (computer == null) continue;
+
+                // Calculate remaining time
+                double remainingTimeInMinutes = 0;
+                if (int.TryParse(user.soDu, out int soDu) &&
+                    int.TryParse(computer.donGia, out int donGia) && donGia > 0)
+                {
+                    remainingTimeInMinutes = (soDu / (double)donGia) * 60; // Convert hours to minutes
+                }
+
+                userActivities.Add(new UserActivityViewModel
+                {
+                    User = user,
+                    Session = session,
+                    Computer = computer,
+                    RemainingTimeInMinutes = remainingTimeInMinutes,
+                    IsActive = true
+                });
+            }
+
+            // Also get recently completed sessions
+            var recentCompletedSessions = _context.suDungMay
+                .Where(s => s.thoiGianKetThuc != null)
+                .OrderByDescending(s => s.thoiGianKetThuc)
+                .Take(10)
+                .ToList();
+
+            foreach (var session in recentCompletedSessions)
+            {
+                // Similar logic as above but mark as inactive
+                var user = _context.nguoiDung.FirstOrDefault(u => u.userName == session.maNguoiDung);
+                if (user == null) continue;
+
+                mayTinh computer = null;
+                if (int.TryParse(session.maMay, out int mayTinhId))
+                {
+                    computer = _context.mayTinh.Find(mayTinhId);
+                }
+                if (computer == null) continue;
+
+                userActivities.Add(new UserActivityViewModel
+                {
+                    User = user,
+                    Session = session,
+                    Computer = computer,
+                    RemainingTimeInMinutes = 0,
+                    IsActive = false
+                });
+            }
+
+            var viewModel = new AdminStatisticsViewModel
+            {
+                ActiveUsers = userActivities
+            };
+
+            return View(viewModel);
+        }
     }
 
 }

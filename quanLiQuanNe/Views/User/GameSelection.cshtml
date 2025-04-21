@@ -7,6 +7,12 @@
 <div class="container">
     <h1 class="text-center my-4">Chọn máy tính để chơi game</h1>
 
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
     <div class="row">
         @foreach (var mayTinh in Model)
         {

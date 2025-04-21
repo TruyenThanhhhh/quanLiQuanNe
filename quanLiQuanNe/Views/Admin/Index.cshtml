@@ -1,5 +1,6 @@
 ﻿@{
-    ViewData["Title"] = "Quản lý Quán Net";
+    ViewData["Title"] = "Chức năng Admin";
+    Layout = "_Layout";
 }
 
 <style>
@@ -41,40 +42,64 @@
         border-top: 2px dashed #ccc;
         margin: 30px 0;
     }
+
+    .card-title {
+        font-weight: bold;
+    }
+
+    .card-text {
+        color: #555;
+    }
 </style>
 
 <div class="container mt-5">
-    <div class="admin-card mx-auto" style="max-width: 900px;">
+    <div class="admin-card mx-auto" style="max-width: 1000px;">
         <h2 class="text-center admin-title">👋 Chào mừng Quản Trị Viên: <strong>@ViewBag.UserName</strong></h2>
         <p class="text-center admin-subtitle">Trang quản lý hệ thống quán net. Bạn có thể kiểm tra và quản lý các hoạt động tại đây.</p>
 
         <hr class="section-divider" />
 
-        <!-- Chức năng chính -->
-        <div class="row text-center">
+        <div class="row">
+            <!-- Quản lý người dùng -->
             <div class="col-md-4 mb-4">
-                <a class="btn btn-primary admin-btn w-100 shadow" asp-controller="Admin" asp-action="Index1">
-                    📋 Quản lý người dùng
-                </a>
+                <div class="card h-100">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">📋 Quản lý người dùng</h5>
+                        <p class="card-text">Thêm, sửa, xóa tài khoản người dùng trong hệ thống.</p>
+                        <a href="@Url.Action("Index1", "Admin")" class="btn btn-primary mt-auto admin-btn w-100">Truy cập</a>
+                    </div>
+                </div>
             </div>
+
+            <!-- Quản lý máy tính -->
             <div class="col-md-4 mb-4">
-                <a class="btn btn-info text-white admin-btn w-100 shadow" asp-controller="mayTinhs" asp-action="Index">
-                    💻 Quản lý thiết bị
-                </a>
+                <div class="card h-100">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">💻 Quản lý máy tính</h5>
+                        <p class="card-text">Quản lý danh sách máy tính và tình trạng hoạt động.</p>
+                        <a href="@Url.Action("Index", "mayTinhs")" class="btn btn-info text-white mt-auto admin-btn w-100">Truy cập</a>
+                    </div>
+                </div>
             </div>
+
+            <!-- Báo cáo thống kê -->
             <div class="col-md-4 mb-4">
-                <a class="btn btn-success admin-btn w-100 shadow" asp-controller="suDungMays" asp-action="Index">
-                    📊 Báo cáo & Thống kê
-                </a>
+                <div class="card h-100">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">📊 Báo cáo thống kê</h5>
+                        <p class="card-text">Xem báo cáo doanh thu và thống kê sử dụng thiết bị.</p>
+                        <a href="@Url.Action("Index", "suDungMays")" class="btn btn-success mt-auto admin-btn w-100">Truy cập</a>
+                    </div>
+                </div>
             </div>
         </div>
 
         <hr class="section-divider" />
 
-        <!-- Quản lý tài chính -->
-        <div class="row text-center">
-            <div class="col-12">
-                <a class="btn btn-outline-warning admin-btn fw-bold w-100 shadow" asp-controller="suDungMays" asp-action="ThongKe">
+        <!-- Thống kê doanh thu -->
+        <div class="row">
+            <div class="col-md-12">
+                <a href="@Url.Action("ThongKe", "suDungMays")" class="btn btn-outline-warning admin-btn fw-bold w-100 shadow">
                     📈 Thống kê doanh thu (sử dụng máy)
                 </a>
             </div>

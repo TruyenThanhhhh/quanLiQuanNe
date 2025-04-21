@@ -8,5 +8,9 @@
         public DateTime thoiGianBatDau { get; set; }
         public DateTime? thoiGianKetThuc { get; set; }
         public string tongTien { get; set; }
+
+        // Navigation properties
+        public nguoiDung nguoiDung { get; set; }
+        public mayTinh mayTinh { get; set; }
     }
 }

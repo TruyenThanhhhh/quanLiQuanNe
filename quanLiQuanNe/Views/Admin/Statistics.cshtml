@@ -1,0 +1,167 @@
+﻿@model quanLiQuanNe.Models.AdminStatisticsViewModel
+
+@{
+    ViewData["Title"] = "Thống kê người dùng";
+    Layout = "_Layout";
+}
+
+<div class="container">
+    <h1 class="text-center my-4">Thống kê người dùng</h1>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">Người dùng đang hoạt động</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.ActiveUsers != null && Model.ActiveUsers.Any(u => u.IsActive))
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped" id="active-users-table">
+                        <thead>
+                            <tr>
+                                <th>Tên đăng nhập</th>
+                                <th>Họ tên</th>
+                                <th>Máy tính</th>
+                                <th>Thời gian bắt đầu</th>
+                                <th>Số dư</th>
+                                <th>Đơn giá (VNĐ/giờ)</th>
+                                <th>Thời gian còn lại</th>
+                                <th>Tổng tiền đã dùng</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var activity in Model.ActiveUsers.Where(u => u.IsActive))
+                            {
+                                <tr data-user-id="@activity.User.Id" data-computer-id="@activity.Computer.id" data-hourly-rate="@activity.Computer.donGia">
+                                    <td>@activity.User.userName</td>
+                                    <td>@activity.User.hoTen</td>
+                                    <td>@activity.Computer.name</td>
+                                    <td>@activity.Session.thoiGianBatDau.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                                    <td class="user-balance" data-balance="@activity.User.soDu">
+                                        @activity.User.soDu VNĐ
+                                    </td>
+                                    <td>@activity.Computer.donGia</td>
+                                    <td>
+                                        <span class="countdown-timer" data-minutes="@activity.RemainingTimeInMinutes">
+                                            Đang tính...
+                                        </span>
+                                    </td>
+                                    <td class="session-total" data-total="@activity.Session.tongTien">
+                                        @activity.Session.tongTien VNĐ
+                                    </td>
+                                    <td>
+                                        <a href="@Url.Action("NapTien", "Admin", new { id = activity.User.Id })" class="btn btn-success btn-sm">
+                                            Nạp tiền
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    Không có người dùng nào đang hoạt động.
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const activeRows = document.querySelectorAll('#active-users-table tbody tr');
+
+            activeRows.forEach(function (row) {
+                const timerElement = row.querySelector('.countdown-timer');
+                const balanceElement = row.querySelector('.user-balance');
+                const totalElement = row.querySelector('.session-total');
+                const hourlyRate = parseFloat(row.getAttribute('data-hourly-rate')) || 0;
+
+                let totalMinutes = parseFloat(timerElement.getAttribute('data-minutes'));
+                let totalSeconds = Math.floor(totalMinutes * 60);
+
+                function updateTimer() {
+                    if (totalSeconds <= 0) {
+                        timerElement.innerHTML = '<span class="text-danger">Hết thời gian!</span>';
+                        return;
+                    }
+
+                    const hours = Math.floor(totalSeconds / 3600);
+                    const minutes = Math.floor((totalSeconds % 3600) / 60);
+                    const seconds = totalSeconds % 60;
+
+                    timerElement.textContent =
+                        (hours < 10 ? '0' + hours : hours) + ':' +
+                        (minutes < 10 ? '0' + minutes : minutes) + ':' +
+                        (seconds < 10 ? '0' + seconds : seconds);
+
+                    totalSeconds--;
+                }
+
+                function simulateBalanceDeduction() {
+                    if (totalSeconds <= 0) return;
+
+                    let currentBalance = parseInt(balanceElement.getAttribute('data-balance')) || 0;
+                    let currentTotal = parseInt(totalElement.getAttribute('data-total')) || 0;
+
+                    const minuteRate = hourlyRate / 60;
+                    let deduction = Math.ceil(minuteRate);
+
+                    if (deduction > currentBalance) {
+                        deduction = currentBalance;
+                    }
+
+                    const newBalance = currentBalance - deduction;
+                    const newTotal = currentTotal + deduction;
+
+                    balanceElement.setAttribute('data-balance', newBalance);
+                    balanceElement.textContent = newBalance + ' VNĐ';
+
+                    totalElement.setAttribute('data-total', newTotal);
+                    totalElement.textContent = newTotal + ' VNĐ';
+
+                    if (hourlyRate > 0) {
+                        totalMinutes = (newBalance / hourlyRate) * 60;
+                        totalSeconds = Math.floor(totalMinutes * 60);
+                    }
+                }
+
+                updateTimer();
+                setInterval(updateTimer, 1000);
+                setInterval(simulateBalanceDeduction, 60000);
+            });
+
+            // --- Phần Fetch từ server ---
+            function fetchUserUpdates() {
+                fetch('@Url.Action("GetUserUpdates", "Admin")')
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(update => {
+                            const row = document.querySelector(`tr[data-user-id="${update.UserId}"][data-computer-id="${update.MachineId}"]`);
+                            if (row) {
+                                const balanceElement = row.querySelector('.user-balance');
+                                balanceElement.setAttribute('data-balance', update.Balance);
+                                balanceElement.textContent = `${update.Balance} VNĐ`;
+
+                                const totalElement = row.querySelector('.session-total');
+                                totalElement.setAttribute('data-total', update.Total);
+                                totalElement.textContent = `${update.Total} VNĐ`;
+
+                                const timerElement = row.querySelector('.countdown-timer');
+                                timerElement.setAttribute('data-minutes', update.RemainingTimeInMinutes);
+                            }
+                        });
+                    })
+                    .catch(error => console.error('Error fetching user updates:', error));
+            }
+
+            fetchUserUpdates(); // initial fetch
+            setInterval(fetchUserUpdates, 30000); // every 30 seconds
+        });
+    </script>
+}

@@ -1,48 +1,75 @@
 ﻿@model quanLiQuanNe.Models.nguoiDung
 
 @{
-    ViewData["Title"] = "Xoá người dùng";
+    ViewData["Title"] = "Xóa người dùng";
 }
 
-<div class="container mt-5">
-    <div class="card shadow-lg border-danger" style="border-radius: 15px;">
-        <div class="card-header bg-danger text-white text-center">
-            <h3>⚠️ Xác nhận xoá người dùng</h3>
-        </div>
-        <div class="card-body">
-            <p class="text-center text-secondary">Bạn có chắc chắn muốn xoá người dùng này không? Hành động này không thể hoàn tác.</p>
-            <hr />
-            <dl class="row">
-                <dt class="col-sm-4">👤 Tên đăng nhập</dt>
-                <dd class="col-sm-8">@Model.userName</dd>
+<style>
+    .card-delete {
+        border-radius: 20px;
+        background: #ffffff;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        max-width: 550px;
+    }
 
-                <dt class="col-sm-4">🔐 Mật khẩu</dt>
-                <dd class="col-sm-8">@Model.passWord</dd>
+    .btn-custom {
+        padding: 10px 20px;
+        font-size: 1.1rem;
+        border-radius: 10px;
+    }
 
-                <dt class="col-sm-4">🪪 Họ tên</dt>
-                <dd class="col-sm-8">@Model.hoTen</dd>
+    .form-label {
+        font-weight: 600;
+    }
 
-                <dt class="col-sm-4">📞 Số điện thoại</dt>
-                <dd class="col-sm-8">@Model.sdt</dd>
+    .details-list {
+        list-style: none;
+        padding: 0;
+    }
 
-                <dt class="col-sm-4">🛡️ Quyền quản trị</dt>
-                <dd class="col-sm-8">
-                    @(Model.isAdmin ? "✔️ Quản trị viên" : "👤 Người dùng")
-                </dd>
+    .details-list li {
+        margin-bottom: 15px;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+</style>
 
-                <dt class="col-sm-4">💰 Số dư tài khoản</dt>
-                <dd class="col-sm-8">@Model.soDu.ToString() VNĐ</dd>
-            </dl>
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card-delete">
+        <h2 class="text-center text-danger mb-4">⚠️ Xóa người dùng</h2>
+        <h3 class="text-center mb-4">Bạn có chắc chắn muốn xóa người dùng này?</h3>
 
-            <form asp-action="Delete" method="post" class="mt-4">
-                <input type="hidden" asp-for="Id" />
-                <div class="d-flex justify-content-center gap-3">
-                    <button type="submit" class="btn btn-danger px-4">
-                        🗑️ Xoá ngay
-                    </button>
-                    <a asp-action="Index" class="btn btn-secondary px-4">← Quay lại</a>
-                </div>
-            </form>
-        </div>
+        <ul class="details-list">
+            <li>
+                <strong>Tên đăng nhập:</strong>
+                <span>@Html.DisplayFor(model => model.userName)</span>
+            </li>
+            <li>
+                <strong>Họ và tên:</strong>
+                <span>@Html.DisplayFor(model => model.hoTen)</span>
+            </li>
+            <li>
+                <strong>Số điện thoại:</strong>
+                <span>@Html.DisplayFor(model => model.sdt)</span>
+            </li>
+            <li>
+                <strong>Quyền quản trị:</strong>
+                <span>@(Model.isAdmin ? "✔️ Quản trị viên" : "👤 Người dùng")</span>
+            </li>
+            <li>
+                <strong>Số dư:</strong>
+                <span>@Html.DisplayFor(model => model.soDu) VNĐ</span>
+            </li>
+        </ul>
+
+        <form asp-action="Delete" class="mt-4">
+            <input type="hidden" asp-for="Id" />
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-danger btn-custom">🗑️ Xóa người dùng</button>
+                <a asp-action="Index" class="btn btn-secondary btn-custom">← Quay lại danh sách</a>
+            </div>
+        </form>
     </div>
 </div>

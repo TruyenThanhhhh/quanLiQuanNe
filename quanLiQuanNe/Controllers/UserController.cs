@@ -150,6 +150,96 @@ namespace quanLiQuanNe.Controllers
 
             return View(viewModel);
         }
+        [HttpPost]
+        public IActionResult DeductBalance()
+        {
+            var userId = HttpContext.Session.GetString("UserName");
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Json(new { success = false, message = "Người dùng không xác định." });
+            }
+
+            // Find current active session
+            var suDungMay = _context.suDungMay
+                .Where(s => s.maNguoiDung == userId && s.thoiGianKetThuc == null)
+                .FirstOrDefault();
+
+            if (suDungMay == null)
+            {
+                return Json(new { success = false, message = "Không tìm thấy phiên sử dụng." });
+            }
+
+            // Get computer rate
+            mayTinh mayTinh = null;
+            int donGia = 0;
+            if (int.TryParse(suDungMay.maMay, out int mayTinhId))
+            {
+                mayTinh = _context.mayTinh.Find(mayTinhId);
+                if (mayTinh != null && int.TryParse(mayTinh.donGia, out int parsedDonGia))
+                {
+                    donGia = parsedDonGia;
+                }
+            }
+
+            if (donGia <= 0)
+            {
+                return Json(new { success = false, message = "Đơn giá không hợp lệ." });
+            }
+
+            // Get user and update balance
+            var nguoiDung = _context.nguoiDung.FirstOrDefault(u => u.userName == userId);
+            if (nguoiDung == null)
+            {
+                return Json(new { success = false, message = "Không tìm thấy người dùng." });
+            }
+
+            if (!int.TryParse(nguoiDung.soDu, out int currentBalance))
+            {
+                currentBalance = 0;
+            }
+
+            // Calculate amount to deduct (1 minute worth of usage)
+            double deductionAmount = donGia / 60.0; // Hourly rate divided by 60 minutes
+
+            // Round to the nearest integer
+            int amountToDeduct = (int)Math.Ceiling(deductionAmount);
+
+            // Ensure we don't deduct more than available balance
+            if (amountToDeduct > currentBalance)
+            {
+                amountToDeduct = currentBalance;
+            }
+
+            // Update balance
+            currentBalance -= amountToDeduct;
+            nguoiDung.soDu = currentBalance.ToString();
+
+            // Update total spent for this session
+            if (!int.TryParse(suDungMay.tongTien, out int currentTotal))
+            {
+                currentTotal = 0;
+            }
+            currentTotal += amountToDeduct;
+            suDungMay.tongTien = currentTotal.ToString();
+
+            _context.SaveChanges();
+
+            // Check if balance is empty - force logout if it is
+            bool shouldLogout = currentBalance <= 0;
+
+            return Json(new
+            {
+                success = true,
+                newBalance = currentBalance,
+                shouldLogout = shouldLogout,
+                remainingTimeInMinutes = shouldLogout ? 0 : currentBalance / (double)donGia * 60
+            });
+        }
+        public ActionResult PlayingInformation()
+        {
+            // Nếu có dữ liệu cần truyền sang View thì thêm vào ViewBag hoặc model
+            return View();
+        }
         public IActionResult GamePlaying()
         {
             var userId = HttpContext.Session.GetString("UserName");
@@ -160,6 +250,15 @@ namespace quanLiQuanNe.Controllers
                 Console.WriteLine("UserId null, chuyển hướng về DangNhap");
                 return RedirectToAction("DangNhap", "Account");
             }
+
+            // Get user information
+            var nguoiDung = _context.nguoiDung.FirstOrDefault(u => u.userName == userId);
+            if (nguoiDung == null)
+            {
+                return RedirectToAction("DangNhap", "Account");
+            }
+
+            ViewBag.NguoiDung = nguoiDung;
 
             var suDungMay = _context.suDungMay
                 .Where(s => s.maNguoiDung == userId && s.thoiGianKetThuc == null)
@@ -172,6 +271,8 @@ namespace quanLiQuanNe.Controllers
                 return RedirectToAction("GameSelection", "User");
             }
 
+            // Calculate remaining time
+            double remainingTimeInMinutes = 0;
             if (int.TryParse(suDungMay.maMay, out int mayTinhId))
             {
                 var mayTinh = _context.mayTinh.Find(mayTinhId);
@@ -181,12 +282,22 @@ namespace quanLiQuanNe.Controllers
                 {
                     var games = _context.Game.ToList();
                     Console.WriteLine($"Số lượng game: {games.Count}");
+
+                    // Get user balance
+                    if (int.TryParse(nguoiDung.soDu, out int soDu) &&
+                        int.TryParse(mayTinh.donGia, out int donGia) && donGia > 0)
+                    {
+                        // Calculate remaining minutes based on current balance
+                        remainingTimeInMinutes = (soDu / (double)donGia) * 60; // Convert hours to minutes
+                    }
+
                     var viewModel = new GamePlayingViewModel
                     {
                         SuDungMay = suDungMay,
                         TenMay = mayTinh.name,
                         DonGia = mayTinh.donGia,
-                        Games = games
+                        Games = games,
+                        RemainingTimeInMinutes = remainingTimeInMinutes
                     };
                     return View(viewModel);
                 }
@@ -195,7 +306,6 @@ namespace quanLiQuanNe.Controllers
             Console.WriteLine("Không tìm thấy máy, chuyển hướng về GameSelection");
             return RedirectToAction("GameSelection", "User");
         }
-
 
         [HttpPost]
         public IActionResult SelectGameToPlay(int gameId)
@@ -278,7 +388,6 @@ namespace quanLiQuanNe.Controllers
         }
 
         [HttpPost]
-
         public IActionResult SelectGame(int mayTinhId)
         {
             Console.WriteLine($"SelectGame - mayTinhId: {mayTinhId}");
@@ -292,8 +401,6 @@ namespace quanLiQuanNe.Controllers
                 return RedirectToAction("GameSelection");
             }
 
-            mayTinh.trangThai = "Hoạt động";
-
             var userId = HttpContext.Session.GetString("UserName");
             Console.WriteLine($"UserId: {userId}");
 
@@ -302,6 +409,23 @@ namespace quanLiQuanNe.Controllers
                 Console.WriteLine("UserId null, chuyển hướng về DangNhap");
                 return RedirectToAction("DangNhap", "Account");
             }
+
+            // Kiểm tra số dư người dùng
+            var nguoiDung = _context.nguoiDung.FirstOrDefault(u => u.userName == userId);
+            if (nguoiDung == null)
+            {
+                return RedirectToAction("DangNhap", "Account");
+            }
+
+            // Kiểm tra số dư
+            if (!int.TryParse(nguoiDung.soDu, out int soDu) || soDu <= 0)
+            {
+                // Không đủ tiền, hiển thị thông báo
+                TempData["ErrorMessage"] = "Số dư tài khoản không đủ. Vui lòng nạp tiền để tiếp tục!";
+                return RedirectToAction("GameSelection");
+            }
+
+            mayTinh.trangThai = "Hoạt động";
 
             var suDung = new suDungMay
             {

@@ -1,54 +1,71 @@
 ﻿@model quanLiQuanNe.Models.nguoiDung
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Chi tiết người dùng";
 }
 
-<h1>Details</h1>
+<style>
+    .card-details {
+        border-radius: 20px;
+        background: #ffffff;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        max-width: 550px;
+    }
 
-<div>
-    <h4>nguoiDung</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.userName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.userName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.passWord)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.passWord)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.hoTen)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.hoTen)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.sdt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.sdt)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.isAdmin)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.isAdmin)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.soDu)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.soDu)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    .btn-custom {
+        padding: 10px 20px;
+        font-size: 1.1rem;
+        border-radius: 10px;
+    }
+
+    .form-label {
+        font-weight: 600;
+    }
+
+    .details-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .details-list li {
+        margin-bottom: 15px;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+</style>
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card-details">
+        <h2 class="text-center text-primary mb-4">🔍 Chi tiết người dùng</h2>
+
+        <ul class="details-list">
+            <li>
+                <strong>Tên đăng nhập:</strong>
+                <span>@Html.DisplayFor(model => model.userName)</span>
+            </li>
+            <li>
+                <strong>Họ và tên:</strong>
+                <span>@Html.DisplayFor(model => model.hoTen)</span>
+            </li>
+            <li>
+                <strong>Số điện thoại:</strong>
+                <span>@Html.DisplayFor(model => model.sdt)</span>
+            </li>
+            <li>
+                <strong>Quyền quản trị:</strong>
+                <span>@(Model.isAdmin ? "✔️ Quản trị viên" : "👤 Người dùng")</span>
+            </li>
+            <li>
+                <strong>Số dư:</strong>
+                <span>@Html.DisplayFor(model => model.soDu) VNĐ</span>
+            </li>
+        </ul>
+
+        <div class="d-grid gap-2 mt-4">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-custom">✏️ Chỉnh sửa</a>
+            <a asp-action="Index" class="btn btn-secondary btn-custom">← Quay lại danh sách</a>
+        </div>
+    </div>
 </div>
